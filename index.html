@@ -1,0 +1,396 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Fin de Semestre - Isa</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
+    color:white;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+.screen{
+    min-height:100vh;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+.active{
+    display:flex;
+}
+
+.card{
+    width:100%;
+    max-width:800px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:25px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 0 40px rgba(0,0,0,.3);
+}
+
+h1{
+    font-size:3rem;
+    margin-bottom:15px;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+p{
+    line-height:1.8;
+}
+
+.btn{
+    margin-top:30px;
+    padding:15px 35px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    background:#38bdf8;
+    color:white;
+    font-size:1rem;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+.progress-container{
+    width:100%;
+    height:30px;
+    background:#1e293b;
+    border-radius:20px;
+    overflow:hidden;
+    margin:30px 0;
+}
+
+.progress{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#22c55e,#38bdf8);
+}
+
+#loadingText{
+    font-size:1.1rem;
+}
+
+.stat{
+    opacity:0;
+    transform:translateY(20px);
+    margin:12px 0;
+    padding:12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.05);
+    transition:.5s;
+}
+
+.stat.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.achievement{
+    opacity:0;
+    transform:translateX(-40px);
+    margin:15px 0;
+    padding:15px;
+    border-radius:12px;
+    background:rgba(255,215,0,.15);
+    transition:.6s;
+}
+
+.achievement.show{
+    opacity:1;
+    transform:translateX(0);
+}
+
+.letter{
+    text-align:left;
+    font-size:1.1rem;
+}
+
+.highlight{
+    color:#38bdf8;
+    font-weight:bold;
+}
+
+.confetti{
+    position:fixed;
+    width:10px;
+    height:10px;
+    top:-20px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+    }
+}
+
+@media(max-width:700px){
+    h1{
+        font-size:2rem;
+    }
+
+    .card{
+        padding:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<section id="start" class="screen active">
+    <div class="card">
+        <h1>🎓 SIMULADOR DE FIN DE SEMESTRE</h1>
+        <p>Analizando resultados académicos de Isa...</p>
+
+        <button class="btn" onclick="startSimulation()">
+            Iniciar análisis
+        </button>
+    </div>
+</section>
+
+<section id="loading" class="screen">
+    <div class="card">
+        <h2>Procesando información...</h2>
+
+        <div class="progress-container">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <p id="loadingText">
+            Iniciando sistema...
+        </p>
+    </div>
+</section>
+
+<section id="results" class="screen">
+    <div class="card">
+        <h2>📊 Resultados detectados</h2>
+
+        <div class="stat">😵 Estrés soportado: 98%</div>
+        <div class="stat">☕ Cafés consumidos: Demasiados</div>
+        <div class="stat">😴 Horas de sueño sacrificadas: Incontables</div>
+        <div class="stat">💪 Determinación: 100%</div>
+        <div class="stat">⭐ Persistencia: Nivel legendario</div>
+        <div class="stat">✅ Semestre completado</div>
+
+        <button class="btn" id="showAchievementsBtn" style="display:none"
+        onclick="showAchievements()">
+            Ver logros desbloqueados
+        </button>
+    </div>
+</section>
+
+<section id="achievements" class="screen">
+    <div class="card">
+        <h2>🏆 Logros desbloqueados</h2>
+
+        <div class="achievement">🏆 Superó semanas de parciales</div>
+        <div class="achievement">🏆 Entregó trabajos bajo presión</div>
+        <div class="achievement">🏆 Sobrevivió a fechas límite imposibles</div>
+        <div class="achievement">🏆 Completó el semestre</div>
+        <div class="achievement">🏆 Merece descansar</div>
+
+        <button class="btn" id="rewardBtn" style="display:none"
+        onclick="showLetter()">
+            Ver recompensa
+        </button>
+    </div>
+</section>
+
+<section id="letter" class="screen">
+    <div class="card letter">
+
+        <h2>🎉 Recompensa Desbloqueada</h2>
+
+        <p>
+            Hola <span class="highlight">Isa</span>,
+            <br><br>
+
+            Quería felicitarte por todo el esfuerzo que hiciste durante este semestre.
+            <br><br>
+
+            Muchas veces solo vemos las notas, los trabajos entregados o los exámenes terminados, pero detrás de todo eso hubo horas de estudio, cansancio, responsabilidad y constancia.
+            <br><br>
+
+            Sé que estudiar <span class="highlight">Pedagogía Infantil</span> implica mucho compromiso, dedicación y paciencia, y llegar hasta aquí es algo de lo que puedes sentirte orgullosa.
+            <br><br>
+
+            Por eso quise hacer este pequeño detalle. No porque hayas terminado un semestre únicamente, sino porque lo hiciste enfrentando cada reto que apareció en el camino.
+            <br><br>
+
+            Espero que ahora puedas descansar, disfrutar lo que conseguiste y celebrar todo el trabajo que hubo detrás de este logro.
+            <br><br>
+
+            Felicitaciones por completar una etapa más. 🎓✨
+            <br><br>
+
+            Con cariño,
+            <br>
+            <span class="highlight">Daniel</span>
+        </p>
+
+    </div>
+</section>
+
+<script>
+
+function changeScreen(id){
+    document.querySelectorAll(".screen")
+    .forEach(s=>s.classList.remove("active"));
+
+    document.getElementById(id)
+    .classList.add("active");
+}
+
+function startSimulation(){
+
+    changeScreen("loading");
+
+    const progress=document.getElementById("progress");
+    const text=document.getElementById("loadingText");
+
+    const messages=[
+        "Revisando parciales...",
+        "Analizando trabajos entregados...",
+        "Calculando niveles de estrés...",
+        "Verificando supervivencia académica...",
+        "Analizando vocación pedagógica...",
+        "Generando recompensa..."
+    ];
+
+    let value=0;
+
+    const interval=setInterval(()=>{
+
+        value++;
+
+        progress.style.width=value+"%";
+
+        text.textContent=
+        messages[Math.floor((value/100)*messages.length)]
+        || messages[messages.length-1];
+
+        if(value>=100){
+
+            clearInterval(interval);
+
+            setTimeout(()=>{
+                showResults();
+            },500);
+        }
+
+    },40);
+}
+
+function showResults(){
+
+    changeScreen("results");
+
+    const stats=document.querySelectorAll(".stat");
+
+    stats.forEach((stat,index)=>{
+
+        setTimeout(()=>{
+            stat.classList.add("show");
+        },index*500);
+
+    });
+
+    setTimeout(()=>{
+        document
+        .getElementById("showAchievementsBtn")
+        .style.display="inline-block";
+    },3500);
+}
+
+function showAchievements(){
+
+    changeScreen("achievements");
+
+    const achievements=
+    document.querySelectorAll(".achievement");
+
+    achievements.forEach((item,index)=>{
+
+        setTimeout(()=>{
+            item.classList.add("show");
+        },index*700);
+
+    });
+
+    setTimeout(()=>{
+        document
+        .getElementById("rewardBtn")
+        .style.display="inline-block";
+    },4200);
+}
+
+function showLetter(){
+
+    changeScreen("letter");
+    createConfetti();
+}
+
+function createConfetti(){
+
+    const colors=[
+        "#38bdf8",
+        "#22c55e",
+        "#facc15",
+        "#f472b6",
+        "#ffffff"
+    ];
+
+    for(let i=0;i<180;i++){
+
+        const confetti=
+        document.createElement("div");
+
+        confetti.classList.add("confetti");
+
+        confetti.style.left=
+        Math.random()*100+"vw";
+
+        confetti.style.background=
+        colors[Math.floor(Math.random()*colors.length)];
+
+        confetti.style.animationDuration=
+        (Math.random()*3+2)+"s";
+
+        document.body.appendChild(confetti);
+
+        setTimeout(()=>{
+            confetti.remove();
+        },5000);
+    }
+}
+</script>
+
+</body>
+</html>
+```
