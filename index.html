@@ -1,396 +1,557 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador de Fin de Semestre - Isa</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
-body{
-    background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
-    color:white;
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-.screen{
-    min-height:100vh;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    padding:30px;
-}
-
-.active{
-    display:flex;
-}
-
-.card{
-    width:100%;
-    max-width:800px;
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(255,255,255,.15);
-    border-radius:25px;
-    padding:40px;
-    text-align:center;
-    box-shadow:0 0 40px rgba(0,0,0,.3);
-}
-
-h1{
-    font-size:3rem;
-    margin-bottom:15px;
-}
-
-h2{
-    margin-bottom:20px;
-}
-
-p{
-    line-height:1.8;
-}
-
-.btn{
-    margin-top:30px;
-    padding:15px 35px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    background:#38bdf8;
-    color:white;
-    font-size:1rem;
-    font-weight:bold;
-    transition:.3s;
-}
-
-.btn:hover{
-    transform:scale(1.05);
-}
-
-.progress-container{
-    width:100%;
-    height:30px;
-    background:#1e293b;
-    border-radius:20px;
-    overflow:hidden;
-    margin:30px 0;
-}
-
-.progress{
-    width:0%;
-    height:100%;
-    background:linear-gradient(90deg,#22c55e,#38bdf8);
-}
-
-#loadingText{
-    font-size:1.1rem;
-}
-
-.stat{
-    opacity:0;
-    transform:translateY(20px);
-    margin:12px 0;
-    padding:12px;
-    border-radius:12px;
-    background:rgba(255,255,255,.05);
-    transition:.5s;
-}
-
-.stat.show{
-    opacity:1;
-    transform:translateY(0);
-}
-
-.achievement{
-    opacity:0;
-    transform:translateX(-40px);
-    margin:15px 0;
-    padding:15px;
-    border-radius:12px;
-    background:rgba(255,215,0,.15);
-    transition:.6s;
-}
-
-.achievement.show{
-    opacity:1;
-    transform:translateX(0);
-}
-
-.letter{
-    text-align:left;
-    font-size:1.1rem;
-}
-
-.highlight{
-    color:#38bdf8;
-    font-weight:bold;
-}
-
-.confetti{
-    position:fixed;
-    width:10px;
-    height:10px;
-    top:-20px;
-    animation:fall linear forwards;
-}
-
-@keyframes fall{
-    to{
-        transform:translateY(110vh) rotate(720deg);
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulador de Fin de Semestre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pink: #ffb3c6; --pink-d: #f472a6;
+      --lilac: #d8b4fe; --lilac-d: #a855f7;
+      --mint: #a7f3d0; --mint-d: #059669;
+      --yellow: #fde68a; --yellow-d: #d97706;
+      --sky: #bae6fd; --sky-d: #0284c7;
+      --peach: #fed7aa; --peach-d: #ea580c;
+      --bg: #fff8f9; --card: #ffffff;
+      --text: #3d2c4e; --muted: #9b89b0; --border: #f0e6f6;
     }
-}
-
-@media(max-width:700px){
-    h1{
-        font-size:2rem;
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow-x: hidden;
     }
-
-    .card{
-        padding:25px;
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, #e9d5ff 1.5px, transparent 1.5px);
+      background-size: 32px 32px;
+      opacity: .45; pointer-events: none; z-index: 0;
     }
-}
-</style>
+    .screen {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 620px;
+      padding: 24px 16px 36px;
+      display: none; flex-direction: column;
+      align-items: center; gap: 20px;
+    }
+    .screen.active { display: flex; animation: popIn .45s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.92) translateY(16px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .card {
+      background: var(--card);
+      border: 2.5px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 26px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(168,85,247,.08), 0 1px 4px rgba(0,0,0,.04);
+    }
+    .pill {
+      display: inline-block;
+      background: var(--lilac); color: var(--lilac-d);
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 99px;
+    }
+    h1 {
+      font-size: clamp(1.6rem,5.5vw,2.4rem);
+      font-weight: 900; text-align: center; line-height: 1.2; color: var(--text);
+    }
+    h1 span.pink  { color: var(--pink-d); }
+    h1 span.lilac { color: var(--lilac-d); }
+    .subtitle { font-size: .9rem; color: var(--muted); text-align: center; font-weight: 600; }
+    .btn {
+      border: none; border-radius: 99px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 800; cursor: pointer;
+      padding: 14px 36px;
+      transition: transform .18s, box-shadow .18s;
+      letter-spacing: .02em;
+    }
+    .btn:hover  { transform: translateY(-3px) scale(1.03); }
+    .btn:active { transform: scale(.97); }
+    .btn-pink   { background: linear-gradient(135deg, var(--pink-d), #e879a8); color: #fff; box-shadow: 0 6px 20px rgba(244,114,166,.35); }
+    .btn-lilac  { background: linear-gradient(135deg, var(--lilac-d), #7c3aed); color: #fff; box-shadow: 0 6px 20px rgba(168,85,247,.35); }
+    .btn-ghost  { background: transparent; border: 2px solid var(--border); color: var(--muted); font-size: .82rem; padding: 10px 24px; box-shadow: none; }
+    .progress-track {
+      width: 100%; height: 16px;
+      background: #f5eeff; border-radius: 99px;
+      border: 2px solid var(--border); overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--pink-d), var(--lilac-d));
+      border-radius: 99px; transition: width .12s linear; position: relative;
+    }
+    .progress-fill::after {
+      content: ''; position: absolute; right: 0; top: 0;
+      width: 20px; height: 100%;
+      background: rgba(255,255,255,.4); border-radius: 99px;
+      animation: sparkle 1s ease-in-out infinite;
+    }
+    @keyframes sparkle { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+    .pct-num {
+      font-size: 2.6rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--pink-d), var(--lilac-d));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .load-msg { font-size: .85rem; font-weight: 700; color: var(--lilac-d); text-align: center; min-height: 22px; transition: opacity .3s; }
+    .stat-item {
+      opacity: 0; transform: translateX(-14px);
+      transition: opacity .4s, transform .4s;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 2px dashed #f5eeff;
+    }
+    .stat-item:last-child { border-bottom: none; }
+    .stat-item.show { opacity: 1; transform: translateX(0); }
+    .stat-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .stat-label { flex: 1; font-size: .83rem; font-weight: 700; color: var(--text); }
+    .stat-track { width: 90px; height: 8px; background: #f5eeff; border-radius: 99px; overflow: hidden; flex-shrink: 0; }
+    .stat-bar   { height: 100%; width: 0; border-radius: 99px; transition: width .9s ease; }
+    .bar-pink   { background: linear-gradient(90deg, var(--pink-d), #fb7185); }
+    .bar-lilac  { background: linear-gradient(90deg, var(--lilac-d), #c084fc); }
+    .bar-mint   { background: linear-gradient(90deg, var(--mint-d), #34d399); }
+    .bar-yellow { background: linear-gradient(90deg, var(--yellow-d), #fbbf24); }
+    .bar-sky    { background: linear-gradient(90deg, var(--sky-d), #38bdf8); }
+    .stat-val   { font-size: .75rem; font-weight: 800; color: var(--muted); min-width: 72px; text-align: right; }
+    .ach-item {
+      display: flex; align-items: center; gap: 14px;
+      background: #fdf6ff; border: 2px solid var(--border);
+      border-radius: 18px; padding: 14px 16px; width: 100%;
+      opacity: 0; transform: scale(.88);
+      transition: opacity .4s, transform .45s cubic-bezier(.34,1.56,.64,1);
+    }
+    .ach-item.show { opacity: 1; transform: scale(1); }
+    .ach-icon-wrap {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0;
+    }
+    .ach-pink   { background: #ffe4ef; }
+    .ach-lilac  { background: #ede9fe; }
+    .ach-mint   { background: #d1fae5; }
+    .ach-yellow { background: #fef9c3; }
+    .ach-sky    { background: #e0f2fe; }
+    .ach-peach  { background: #fff7ed; }
+    .ach-info  { flex: 1; }
+    .ach-name  { font-size: .85rem; font-weight: 800; color: var(--text); }
+    .ach-desc  { font-size: .72rem; color: var(--muted); margin-top: 2px; font-weight: 600; }
+    .ach-badge { font-size: .6rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; }
+    .badge-pink   { background: var(--pink);   color: var(--pink-d); }
+    .badge-lilac  { background: var(--lilac);  color: var(--lilac-d); }
+    .badge-mint   { background: var(--mint);   color: var(--mint-d); }
+    .badge-yellow { background: var(--yellow); color: var(--yellow-d); }
+    .badge-sky    { background: var(--sky);    color: var(--sky-d); }
+    .badge-peach  { background: var(--peach);  color: var(--peach-d); }
+    .letter-wrap {
+      background: linear-gradient(145deg, #fff5fb, #f5f0ff);
+      border: 2.5px solid var(--border);
+      border-radius: 24px; padding: 32px 28px; width: 100%; position: relative;
+    }
+    .letter-wrap::before {
+      content: '✿  ✿  ✿';
+      position: absolute; top: 14px; left: 0; right: 0;
+      text-align: center; font-size: .8rem; color: var(--pink); letter-spacing: .3em;
+    }
+    .letter-text {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: .93rem; line-height: 1.9; color: #4a3560; margin-top: 20px;
+    }
+    .letter-text p { margin-bottom: 12px; }
+    .letter-text p:last-child { margin-bottom: 0; }
+    .letter-sign { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .85rem; color: var(--pink-d); text-align: right; margin-top: 18px; }
+    .deco {
+      position: fixed; pointer-events: none; z-index: 5;
+      font-size: 1.6rem; animation: float 4s ease-in-out infinite; opacity: .55;
+    }
+    .deco:nth-child(1) { top: 8%;  left: 4%;  animation-delay: 0s; }
+    .deco:nth-child(2) { top: 14%; right: 6%; animation-delay: .8s; }
+    .deco:nth-child(3) { top: 45%; left: 2%;  animation-delay: 1.4s; }
+    .deco:nth-child(4) { top: 60%; right: 3%; animation-delay: .4s; }
+    .deco:nth-child(5) { bottom: 12%; left: 6%;  animation-delay: 2s; }
+    .deco:nth-child(6) { bottom: 18%; right: 5%; animation-delay: 1s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(-4deg); }
+      50%      { transform: translateY(-10px) rotate(4deg); }
+    }
+    .t-line { font-size: .72rem; font-weight: 700; color: var(--muted); opacity: 0; transition: opacity .35s; display: flex; gap: 6px; align-items: center; }
+    .t-line.show { opacity: 1; }
+    .dot-ok   { width: 8px; height: 8px; border-radius: 50%; background: var(--mint-d); flex-shrink: 0; }
+    .dot-warn { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow-d); flex-shrink: 0; }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+    @media (max-width: 480px) {
+      .card, .letter-wrap { padding: 20px 16px; }
+      .stat-track { width: 60px; }
+      .stat-val   { min-width: 60px; font-size: .7rem; }
+      h1 { font-size: 1.5rem; }
+      .deco { display: none; }
+    }
+  </style>
 </head>
-
 <body>
 
-<section id="start" class="screen active">
-    <div class="card">
-        <h1>🎓 SIMULADOR DE FIN DE SEMESTRE</h1>
-        <p>Analizando resultados académicos de Isa...</p>
+<div class="deco">🐰</div>
+<div class="deco">✏️</div>
+<div class="deco">🌸</div>
+<div class="deco">📚</div>
+<div class="deco">⭐</div>
+<div class="deco">🍀</div>
+<canvas id="confetti-canvas"></canvas>
 
-        <button class="btn" onclick="startSimulation()">
-            Iniciar análisis
-        </button>
-    </div>
+<!-- PANTALLA 1: INICIO -->
+<section class="screen active" id="s-start">
+  <svg width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="Conejita con birrete">
+    <ellipse cx="56" cy="52" rx="14" ry="32" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="56" cy="52" rx="8" ry="22" fill="#ffb3c6"/>
+    <ellipse cx="104" cy="52" rx="14" ry="32" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="104" cy="52" rx="8" ry="22" fill="#ffb3c6"/>
+    <ellipse cx="80" cy="118" rx="36" ry="28" fill="#fff0f6" stroke="#f9a8d4" stroke-width="2.5"/>
+    <circle cx="80" cy="90" r="34" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="63" cy="97" rx="9" ry="6" fill="#ffb3c6" opacity=".55"/>
+    <ellipse cx="97" cy="97" rx="9" ry="6" fill="#ffb3c6" opacity=".55"/>
+    <circle cx="70" cy="88" r="5.5" fill="#3d2c4e"/>
+    <circle cx="90" cy="88" r="5.5" fill="#3d2c4e"/>
+    <circle cx="72" cy="86" r="2" fill="#fff"/>
+    <circle cx="92" cy="86" r="2" fill="#fff"/>
+    <ellipse cx="80" cy="96" rx="4" ry="3" fill="#f9a8d4"/>
+    <path d="M76 99 Q80 104 84 99" fill="none" stroke="#f9a8d4" stroke-width="2" stroke-linecap="round"/>
+    <line x1="56" y1="96" x2="74" y2="97" stroke="#c4b5d0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="56" y1="100" x2="74" y2="99" stroke="#c4b5d0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="86" y1="97" x2="104" y2="96" stroke="#c4b5d0" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="86" y1="99" x2="104" y2="100" stroke="#c4b5d0" stroke-width="1.5" stroke-linecap="round"/>
+    <rect x="54" y="60" width="52" height="10" rx="4" fill="#a855f7"/>
+    <rect x="62" y="52" width="36" height="14" rx="5" fill="#7c3aed"/>
+    <line x1="106" y1="60" x2="112" y2="74" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="112" cy="76" r="4" fill="#fbbf24"/>
+    <rect x="52" y="126" width="22" height="16" rx="3" fill="#fef3c7" stroke="#fbbf24" stroke-width="2"/>
+    <line x1="56" y1="131" x2="70" y2="131" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="56" y1="135" x2="66" y2="135" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="104" y="142" font-size="16" text-anchor="middle">⭐</text>
+  </svg>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <span class="pill">✨ Edición semestral especial</span>
+    <h1>Simulador de<br><span class="pink">Fin de Semestre</span></h1>
+    <p class="subtitle">Se completó una misión muy importante 🎓</p>
+  </div>
+
+  <div class="card" style="text-align:center;max-width:400px;">
+    <p style="font-size:.85rem;color:var(--muted);font-weight:600;line-height:1.7;">
+      Se ha detectado la finalización de un semestre universitario.<br>
+      Analizando resultados académicos... 🔍🐇
+    </p>
+  </div>
+
+  <button class="btn btn-pink" onclick="startLoading()">▶ Iniciar análisis</button>
+  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.08em;">PRESIONA PARA CONTINUAR</p>
 </section>
 
-<section id="loading" class="screen">
-    <div class="card">
-        <h2>Procesando información...</h2>
+<!-- PANTALLA 2: CARGA -->
+<section class="screen" id="s-loading">
+  <span class="pill">Procesando datos 🐇</span>
 
-        <div class="progress-container">
-            <div class="progress" id="progress"></div>
-        </div>
+  <svg width="120" height="92" viewBox="0 0 120 92" role="img" aria-label="Conejita corriendo con libros">
+    <ellipse cx="42" cy="22" rx="9" ry="20" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2"/>
+    <ellipse cx="42" cy="22" rx="5" ry="13" fill="#ffb3c6"/>
+    <ellipse cx="60" cy="20" rx="9" ry="20" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2"/>
+    <ellipse cx="60" cy="20" rx="5" ry="13" fill="#ffb3c6"/>
+    <ellipse cx="60" cy="68" rx="24" ry="18" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2"/>
+    <circle cx="54" cy="47" r="22" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2"/>
+    <ellipse cx="44" cy="51" rx="6" ry="4" fill="#ffb3c6" opacity=".5"/>
+    <ellipse cx="64" cy="51" rx="6" ry="4" fill="#ffb3c6" opacity=".5"/>
+    <circle cx="47" cy="44" r="4" fill="#3d2c4e"/>
+    <circle cx="61" cy="44" r="4" fill="#3d2c4e"/>
+    <circle cx="48.5" cy="42.5" r="1.5" fill="#fff"/>
+    <circle cx="62.5" cy="42.5" r="1.5" fill="#fff"/>
+    <ellipse cx="54" cy="51" rx="3" ry="2" fill="#f9a8d4"/>
+    <line x1="48" y1="82" x2="38" y2="90" stroke="#f9a8d4" stroke-width="4" stroke-linecap="round"/>
+    <line x1="64" y1="83" x2="76" y2="88" stroke="#f9a8d4" stroke-width="4" stroke-linecap="round"/>
+    <rect x="74" y="50" width="34" height="24" rx="4" fill="#c084fc"/>
+    <line x1="84" y1="50" x2="84" y2="74" stroke="#7c3aed" stroke-width="1.5"/>
+    <rect x="80" y="56" width="24" height="18" rx="3" fill="#fde68a"/>
+    <line x1="88" y1="56" x2="88" y2="74" stroke="#fbbf24" stroke-width="1.5"/>
+    <circle cx="84" cy="70" r="8" fill="#fff" stroke="#f9a8d4" stroke-width="1.5"/>
+    <path d="M80 30 Q85 20 82 15" fill="none" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="81.5" cy="14" r="3" fill="#bae6fd"/>
+  </svg>
 
-        <p id="loadingText">
-            Iniciando sistema...
-        </p>
-    </div>
+  <div class="card" style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;">
+    <div class="pct-num" id="pct-text">0%</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+    <p class="load-msg" id="load-msg">Calentando el sistema... 🌸</p>
+    <div id="t-lines" style="display:flex;flex-direction:column;gap:7px;width:100%;text-align:left;"></div>
+  </div>
+
+  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.06em;">NO CERRAR ESTA VENTANA ✨</p>
 </section>
 
-<section id="results" class="screen">
-    <div class="card">
-        <h2>📊 Resultados detectados</h2>
+<!-- PANTALLA 3: ESTADÍSTICAS -->
+<section class="screen" id="s-stats">
+  <span class="pill">📊 Resultados oficiales</span>
+  <h1><span class="lilac">Análisis</span><br>completado ✓</h1>
 
-        <div class="stat">😵 Estrés soportado: 98%</div>
-        <div class="stat">☕ Cafés consumidos: Demasiados</div>
-        <div class="stat">😴 Horas de sueño sacrificadas: Incontables</div>
-        <div class="stat">💪 Determinación: 100%</div>
-        <div class="stat">⭐ Persistencia: Nivel legendario</div>
-        <div class="stat">✅ Semestre completado</div>
-
-        <button class="btn" id="showAchievementsBtn" style="display:none"
-        onclick="showAchievements()">
-            Ver logros desbloqueados
-        </button>
+  <div class="card">
+    <p style="font-size:.72rem;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;text-align:center;">
+      Estadísticas personales del semestre
+    </p>
+    <div class="stat-item" id="st0">
+      <span class="stat-emoji">☕</span>
+      <span class="stat-label">Cafés consumidos</span>
+      <div class="stat-track"><div class="stat-bar bar-yellow" data-w="95"></div></div>
+      <span class="stat-val">Demasiados ☕</span>
     </div>
+    <div class="stat-item" id="st1">
+      <span class="stat-emoji">😤</span>
+      <span class="stat-label">Estrés soportado</span>
+      <div class="stat-track"><div class="stat-bar bar-pink" data-w="98"></div></div>
+      <span class="stat-val">98% máximo</span>
+    </div>
+    <div class="stat-item" id="st2">
+      <span class="stat-emoji">😴</span>
+      <span class="stat-label">Sueño sacrificado</span>
+      <div class="stat-track"><div class="stat-bar bar-sky" data-w="88"></div></div>
+      <span class="stat-val">Incontable 😅</span>
+    </div>
+    <div class="stat-item" id="st3">
+      <span class="stat-emoji">💪</span>
+      <span class="stat-label">Determinación</span>
+      <div class="stat-track"><div class="stat-bar bar-lilac" data-w="100"></div></div>
+      <span class="stat-val">100% ✓</span>
+    </div>
+    <div class="stat-item" id="st4">
+      <span class="stat-emoji">🔥</span>
+      <span class="stat-label">Persistencia</span>
+      <div class="stat-track"><div class="stat-bar bar-pink" data-w="100"></div></div>
+      <span class="stat-val">Legendaria 🏆</span>
+    </div>
+    <div class="stat-item" id="st5">
+      <span class="stat-emoji">🎓</span>
+      <span class="stat-label">Semestre completado</span>
+      <div class="stat-track"><div class="stat-bar bar-mint" data-w="100"></div></div>
+      <span class="stat-val" style="color:var(--mint-d)">LOGRADO ✓</span>
+    </div>
+  </div>
+
+  <button class="btn btn-lilac" onclick="showAchs()">Ver logros desbloqueados ✨</button>
 </section>
 
-<section id="achievements" class="screen">
-    <div class="card">
-        <h2>🏆 Logros desbloqueados</h2>
-
-        <div class="achievement">🏆 Superó semanas de parciales</div>
-        <div class="achievement">🏆 Entregó trabajos bajo presión</div>
-        <div class="achievement">🏆 Sobrevivió a fechas límite imposibles</div>
-        <div class="achievement">🏆 Completó el semestre</div>
-        <div class="achievement">🏆 Merece descansar</div>
-
-        <button class="btn" id="rewardBtn" style="display:none"
-        onclick="showLetter()">
-            Ver recompensa
-        </button>
-    </div>
+<!-- PANTALLA 4: LOGROS -->
+<section class="screen" id="s-achs">
+  <span class="pill">🏆 Sistema de logros</span>
+  <h1>Logros<br><span class="pink">Desbloqueados</span></h1>
+  <div id="ach-list" style="display:flex;flex-direction:column;gap:10px;width:100%;"></div>
+  <button class="btn btn-pink" id="btn-reward" onclick="showFinal()" style="display:none;">🎁 Ver recompensa</button>
 </section>
 
-<section id="letter" class="screen">
-    <div class="card letter">
+<!-- PANTALLA 5: CARTA FINAL -->
+<section class="screen" id="s-final">
+  <svg width="170" height="140" viewBox="0 0 170 140" role="img" aria-label="Conejita celebrando">
+    <rect x="12" y="18" width="10" height="7" rx="2" fill="#ffb3c6" transform="rotate(-25,17,21)"/>
+    <rect x="145" y="12" width="10" height="7" rx="2" fill="#a7f3d0" transform="rotate(20,150,15)"/>
+    <rect x="20" y="90" width="8" height="6" rx="2" fill="#bae6fd" transform="rotate(35,24,93)"/>
+    <rect x="148" y="85" width="8" height="6" rx="2" fill="#fde68a" transform="rotate(-20,152,88)"/>
+    <circle cx="30" cy="50" r="5" fill="#d8b4fe" opacity=".7"/>
+    <circle cx="140" cy="55" r="5" fill="#fda4af" opacity=".7"/>
+    <circle cx="155" cy="30" r="4" fill="#6ee7b7" opacity=".7"/>
+    <circle cx="15" cy="70" r="4" fill="#fbbf24" opacity=".7"/>
+    <ellipse cx="68" cy="32" rx="11" ry="28" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="68" cy="32" rx="6" ry="18" fill="#ffb3c6"/>
+    <ellipse cx="100" cy="30" rx="11" ry="28" fill="#ffd6e7" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="100" cy="30" rx="6" ry="18" fill="#ffb3c6"/>
+    <ellipse cx="84" cy="118" rx="30" ry="20" fill="#fff0f6" stroke="#f9a8d4" stroke-width="2.5"/>
+    <circle cx="84" cy="86" r="30" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2.5"/>
+    <ellipse cx="68" cy="93" rx="9" ry="6" fill="#ffb3c6" opacity=".55"/>
+    <ellipse cx="100" cy="93" rx="9" ry="6" fill="#ffb3c6" opacity=".55"/>
+    <path d="M66 80 Q70 74 74 80" fill="none" stroke="#3d2c4e" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M88 80 Q92 74 96 80" fill="none" stroke="#3d2c4e" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="84" cy="90" rx="4" ry="2.5" fill="#f9a8d4"/>
+    <path d="M79 94 Q84 100 89 94" fill="none" stroke="#f9a8d4" stroke-width="2" stroke-linecap="round"/>
+    <rect x="62" y="60" width="44" height="9" rx="3" fill="#a855f7"/>
+    <rect x="68" y="52" width="32" height="12" rx="4" fill="#7c3aed"/>
+    <line x1="106" y1="60" x2="112" y2="72" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="112" cy="74" r="4" fill="#fbbf24"/>
+    <path d="M58 108 Q40 96 36 80" fill="none" stroke="#f9a8d4" stroke-width="8" stroke-linecap="round"/>
+    <path d="M110 108 Q128 96 132 80" fill="none" stroke="#f9a8d4" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="36" cy="78" r="7" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2"/>
+    <circle cx="132" cy="78" r="7" fill="#fff5fb" stroke="#f9a8d4" stroke-width="2"/>
+    <text x="28" y="75" font-size="11">⭐</text>
+    <text x="126" y="75" font-size="11">⭐</text>
+  </svg>
 
-        <h2>🎉 Recompensa Desbloqueada</h2>
+  <div style="text-align:center;">
+    <h1><span class="lilac">Felicitaciones!</span><br>Lo lograste 🎉</h1>
+    <p style="margin-top:8px;font-size:1.2rem;letter-spacing:.2em;color:var(--yellow-d);">★ ★ ★ ★ ★</p>
+  </div>
 
-        <p>
-            Hola <span class="highlight">Isa</span>,
-            <br><br>
-
-            Quería felicitarte por todo el esfuerzo que hiciste durante este semestre.
-            <br><br>
-
-            Muchas veces solo vemos las notas, los trabajos entregados o los exámenes terminados, pero detrás de todo eso hubo horas de estudio, cansancio, responsabilidad y constancia.
-            <br><br>
-
-            Sé que estudiar <span class="highlight">Pedagogía Infantil</span> implica mucho compromiso, dedicación y paciencia, y llegar hasta aquí es algo de lo que puedes sentirte orgullosa.
-            <br><br>
-
-            Por eso quise hacer este pequeño detalle. No porque hayas terminado un semestre únicamente, sino porque lo hiciste enfrentando cada reto que apareció en el camino.
-            <br><br>
-
-            Espero que ahora puedas descansar, disfrutar lo que conseguiste y celebrar todo el trabajo que hubo detrás de este logro.
-            <br><br>
-
-            Felicitaciones por completar una etapa más. 🎓✨
-            <br><br>
-
-            Con cariño,
-            <br>
-            <span class="highlight">Daniel</span>
-        </p>
-
+  <div class="letter-wrap">
+    <div class="letter-text">
+      <p>Quería felicitarte por todo el esfuerzo que hiciste este semestre.</p>
+      <p>Muchas veces solo vemos las notas o los resultados, pero detrás de ellos hubo horas de estudio, trabajos, cansancio y mucha constancia.</p>
+      <p>Por eso quise hacer este pequeño detalle — porque ese esfuerzo merece ser reconocido, aunque sea de esta forma.</p>
+      <p>Espero que te sientas orgullosa de lo que lograste, porque terminar un semestre nunca es algo sencillo. Requiere esfuerzo real, sacrificio real y mucha determinación.</p>
+      <p>Ahora toca descansar un poco, disfrutar lo que conseguiste y recargar energías para lo que viene.</p>
+      <p><strong>Felicitaciones por completar una etapa más. 🎓🌸</strong></p>
     </div>
+    <div class="letter-sign">— Con admiración por tu esfuerzo ✨</div>
+  </div>
+
+  <button class="btn btn-ghost" onclick="restart()">↺ Reiniciar simulador</button>
 </section>
 
 <script>
-
-function changeScreen(id){
-    document.querySelectorAll(".screen")
-    .forEach(s=>s.classList.remove("active"));
-
-    document.getElementById(id)
-    .classList.add("active");
+const $ = id => document.getElementById(id);
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
 }
 
-function startSimulation(){
+const MSGS = [
+  'Revisando parciales... 📝',
+  'Analizando trabajos entregados... 📦',
+  'Calculando niveles de estres... 😮',
+  'Contando los cafes consumidos... ☕',
+  'Verificando supervivencia academica... 🐇',
+  'Midiendo determinacion... 💪',
+  'Evaluando horas de sueño perdidas... 😴',
+  'Generando recompensa final... 🎁',
+];
+const LOGS = [
+  { ok: true,  text: 'Modulo de parciales cargado correctamente' },
+  { ok: true,  text: 'Registro de entregas verificado ✓' },
+  { ok: false, text: 'Nivel de estres: fuera del rango normal' },
+  { ok: true,  text: 'Persistencia: ACTIVA — nivel legendario' },
+  { ok: false, text: 'Horas de sueno: valor no computable 😅' },
+  { ok: true,  text: 'Determinacion: 100% — record historico' },
+  { ok: true,  text: 'Semestre completado — generando diploma ✨' },
+];
 
-    changeScreen("loading");
-
-    const progress=document.getElementById("progress");
-    const text=document.getElementById("loadingText");
-
-    const messages=[
-        "Revisando parciales...",
-        "Analizando trabajos entregados...",
-        "Calculando niveles de estrés...",
-        "Verificando supervivencia académica...",
-        "Analizando vocación pedagógica...",
-        "Generando recompensa..."
-    ];
-
-    let value=0;
-
-    const interval=setInterval(()=>{
-
-        value++;
-
-        progress.style.width=value+"%";
-
-        text.textContent=
-        messages[Math.floor((value/100)*messages.length)]
-        || messages[messages.length-1];
-
-        if(value>=100){
-
-            clearInterval(interval);
-
-            setTimeout(()=>{
-                showResults();
-            },500);
-        }
-
-    },40);
-}
-
-function showResults(){
-
-    changeScreen("results");
-
-    const stats=document.querySelectorAll(".stat");
-
-    stats.forEach((stat,index)=>{
-
-        setTimeout(()=>{
-            stat.classList.add("show");
-        },index*500);
-
-    });
-
-    setTimeout(()=>{
-        document
-        .getElementById("showAchievementsBtn")
-        .style.display="inline-block";
-    },3500);
-}
-
-function showAchievements(){
-
-    changeScreen("achievements");
-
-    const achievements=
-    document.querySelectorAll(".achievement");
-
-    achievements.forEach((item,index)=>{
-
-        setTimeout(()=>{
-            item.classList.add("show");
-        },index*700);
-
-    });
-
-    setTimeout(()=>{
-        document
-        .getElementById("rewardBtn")
-        .style.display="inline-block";
-    },4200);
-}
-
-function showLetter(){
-
-    changeScreen("letter");
-    createConfetti();
-}
-
-function createConfetti(){
-
-    const colors=[
-        "#38bdf8",
-        "#22c55e",
-        "#facc15",
-        "#f472b6",
-        "#ffffff"
-    ];
-
-    for(let i=0;i<180;i++){
-
-        const confetti=
-        document.createElement("div");
-
-        confetti.classList.add("confetti");
-
-        confetti.style.left=
-        Math.random()*100+"vw";
-
-        confetti.style.background=
-        colors[Math.floor(Math.random()*colors.length)];
-
-        confetti.style.animationDuration=
-        (Math.random()*3+2)+"s";
-
-        document.body.appendChild(confetti);
-
-        setTimeout(()=>{
-            confetti.remove();
-        },5000);
+function startLoading() {
+  showScreen('s-loading');
+  $('t-lines').innerHTML = '';
+  LOGS.forEach(() => {
+    const d = document.createElement('div');
+    d.className = 't-line';
+    $('t-lines').appendChild(d);
+  });
+  let pct = 0, msgIdx = 0, logIdx = 0;
+  const iv = setInterval(() => {
+    const step = pct < 35 ? 1.1 : pct < 72 ? .8 : pct < 92 ? .5 : .28;
+    pct = Math.min(100, pct + step);
+    $('prog-fill').style.width = pct + '%';
+    $('pct-text').textContent = Math.floor(pct) + '%';
+    const mi = Math.min(MSGS.length - 1, Math.floor((pct / 100) * MSGS.length));
+    if (mi !== msgIdx) {
+      msgIdx = mi;
+      $('load-msg').style.opacity = '0';
+      setTimeout(() => { $('load-msg').textContent = MSGS[msgIdx]; $('load-msg').style.opacity = '1'; }, 220);
     }
+    const li = Math.min(LOGS.length, Math.floor((pct / 100) * (LOGS.length + 1)));
+    if (li > logIdx) {
+      const lines = $('t-lines').querySelectorAll('.t-line');
+      for (let i = logIdx; i < li && i < LOGS.length; i++) {
+        lines[i].innerHTML = '<div class="' + (LOGS[i].ok ? 'dot-ok' : 'dot-warn') + '"></div>' + LOGS[i].text;
+        lines[i].classList.add('show');
+      }
+      logIdx = li;
+    }
+    if (pct >= 100) { clearInterval(iv); setTimeout(showStats, 700); }
+  }, 30);
 }
-</script>
 
+function showStats() {
+  showScreen('s-stats');
+  document.querySelectorAll('.stat-item').forEach((row, i) => {
+    setTimeout(() => {
+      row.classList.add('show');
+      const bar = row.querySelector('.stat-bar');
+      if (bar) setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 60);
+    }, i * 190);
+  });
+}
+
+const ACHS = [
+  { icon:'⚔️', color:'ach-pink',   badge:'Epico',      badgeC:'badge-pink',   name:'Guerrera de Parciales',     desc:'Supero multiples semanas de examenes sin rendirse' },
+  { icon:'📦', color:'ach-lilac',  badge:'Raro',       badgeC:'badge-lilac',  name:'Maestra de las Entregas',   desc:'Entrego todos los trabajos incluso bajo presion extrema' },
+  { icon:'⏰', color:'ach-sky',    badge:'Epico',      badgeC:'badge-sky',    name:'Cazadora de Fechas Limite', desc:'Sobrevivio a plazos imposibles con determinacion' },
+  { icon:'☕', color:'ach-yellow', badge:'Legendario', badgeC:'badge-yellow', name:'Resistencia Infinita',      desc:'Continuo avanzando cuando cualquiera habria parado' },
+  { icon:'🎓', color:'ach-mint',   badge:'Legendario', badgeC:'badge-mint',   name:'Semestre Completado',       desc:'Finalizo exitosamente el semestre universitario' },
+  { icon:'🌟', color:'ach-peach',  badge:'Especial',   badgeC:'badge-peach',  name:'Mereces Descansar',         desc:'Ganaste el derecho de disfrutar tu logro con orgullo' },
+];
+
+function showAchs() {
+  showScreen('s-achs');
+  const list = $('ach-list');
+  list.innerHTML = '';
+  ACHS.forEach((a, i) => {
+    const el = document.createElement('div');
+    el.className = 'ach-item';
+    el.innerHTML =
+      '<div class="ach-icon-wrap ' + a.color + '">' + a.icon + '</div>' +
+      '<div class="ach-info"><div class="ach-name">' + a.name + '</div><div class="ach-desc">' + a.desc + '</div></div>' +
+      '<span class="ach-badge ' + a.badgeC + '">' + a.badge + '</span>';
+    list.appendChild(el);
+    setTimeout(() => el.classList.add('show'), 280 + i * 360);
+  });
+  setTimeout(() => {
+    $('btn-reward').style.display = 'block';
+    $('btn-reward').style.animation = 'popIn .5s cubic-bezier(.34,1.56,.64,1)';
+  }, 280 + ACHS.length * 360 + 400);
+}
+
+function showFinal() { showScreen('s-final'); launchConfetti(); }
+function restart()    { stopConfetti(); showScreen('s-start'); }
+
+let cAF = null;
+function launchConfetti() {
+  const cv = $('confetti-canvas');
+  const cx = cv.getContext('2d');
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight;
+  const cols = ['#ffb3c6','#d8b4fe','#a7f3d0','#fde68a','#bae6fd','#fed7aa','#f9a8d4','#c084fc','#6ee7b7'];
+  const pieces = Array.from({ length: 180 }, () => ({
+    x: Math.random() * cv.width,
+    y: -Math.random() * cv.height * .6,
+    w: Math.random() * 12 + 5, h: Math.random() * 7 + 4,
+    c: cols[Math.floor(Math.random() * cols.length)],
+    r: Math.random() * Math.PI * 2,
+    vx: (Math.random() - .5) * 3.5, vy: Math.random() * 3 + 1.8,
+    vr: (Math.random() - .5) * .14,
+  }));
+  let t = 0;
+  function draw() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    pieces.forEach(p => {
+      cx.save();
+      cx.translate(p.x + p.w/2, p.y + p.h/2);
+      cx.rotate(p.r);
+      cx.globalAlpha = t < 60 ? 1 : Math.max(0, 1 - (t - 60) / 100);
+      cx.fillStyle = p.c;
+      cx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      cx.restore();
+      p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += .035;
+      if (p.y > cv.height + 20) p.y = -12;
+    });
+    t++;
+    if (t < 170) cAF = requestAnimationFrame(draw);
+    else cx.clearRect(0, 0, cv.width, cv.height);
+  }
+  cAF = requestAnimationFrame(draw);
+}
+function stopConfetti() {
+  if (cAF) cancelAnimationFrame(cAF);
+  const cv = $('confetti-canvas');
+  cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+}
+window.addEventListener('resize', () => {
+  const cv = $('confetti-canvas');
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+});
+</script>
 </body>
 </html>
-```
