@@ -236,20 +236,19 @@
   </svg>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-    <span class="pill">✨ Edición semestral especial</span>
-    <h1>Simulador de<br><span class="pink">Fin de Semestre</span></h1>
-    <p class="subtitle">Se completó una misión muy importante 🎓</p>
+    <span class="pill">Para la mejor profe...</span>
+    <h1>Bienvenida a tu analisis de<br><span class="pink">Final de Semestre</span></h1>
+    <p class="subtitle">te gustaria conocer los resultados?</p>
   </div>
 
   <div class="card" style="text-align:center;max-width:400px;">
     <p style="font-size:.85rem;color:var(--muted);font-weight:600;line-height:1.7;">
-      Se ha detectado la finalización de un semestre universitario.<br>
-      Analizando resultados académicos... 🔍🐇
+      presiona "iniciar analisis" para poder ver tus resultados de este semetreee.<br>
     </p>
   </div>
 
   <button class="btn btn-pink" onclick="startLoading()">▶ Iniciar análisis</button>
-  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.08em;">PRESIONA PARA CONTINUAR</p>
+  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.08em;"></p>
 </section>
 
 <!-- PANTALLA 2: CARGA -->
@@ -288,24 +287,18 @@
     <div id="t-lines" style="display:flex;flex-direction:column;gap:7px;width:100%;text-align:left;"></div>
   </div>
 
-  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.06em;">NO CERRAR ESTA VENTANA ✨</p>
+  <p style="font-size:.68rem;color:var(--muted);font-weight:700;letter-spacing:.06em;"></p>
 </section>
 
 <!-- PANTALLA 3: ESTADÍSTICAS -->
 <section class="screen" id="s-stats">
-  <span class="pill">📊 Resultados oficiales</span>
-  <h1><span class="lilac">Análisis</span><br>completado ✓</h1>
+  <span class="pill">Tus resultados</span>
+  <h1><span class="lilac">Análisis</span><br>completado</h1>
 
   <div class="card">
     <p style="font-size:.72rem;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;text-align:center;">
-      Estadísticas personales del semestre
+      las estadisticas de la profe son:
     </p>
-    <div class="stat-item" id="st0">
-      <span class="stat-emoji">☕</span>
-      <span class="stat-label">Cafés consumidos</span>
-      <div class="stat-track"><div class="stat-bar bar-yellow" data-w="95"></div></div>
-      <span class="stat-val">Demasiados ☕</span>
-    </div>
     <div class="stat-item" id="st1">
       <span class="stat-emoji">😤</span>
       <span class="stat-label">Estrés soportado</span>
@@ -316,37 +309,37 @@
       <span class="stat-emoji">😴</span>
       <span class="stat-label">Sueño sacrificado</span>
       <div class="stat-track"><div class="stat-bar bar-sky" data-w="88"></div></div>
-      <span class="stat-val">Incontable 😅</span>
+      <span class="stat-val">Incontable...</span>
     </div>
     <div class="stat-item" id="st3">
-      <span class="stat-emoji">💪</span>
-      <span class="stat-label">Determinación</span>
+      <span class="stat-emoji">👩🏻‍🏫</span>
+      <span class="stat-label">Vocación</span>
       <div class="stat-track"><div class="stat-bar bar-lilac" data-w="100"></div></div>
-      <span class="stat-val">100% ✓</span>
+      <span class="stat-val">100% </span>
     </div>
     <div class="stat-item" id="st4">
       <span class="stat-emoji">🔥</span>
       <span class="stat-label">Persistencia</span>
       <div class="stat-track"><div class="stat-bar bar-pink" data-w="100"></div></div>
-      <span class="stat-val">Legendaria 🏆</span>
+      <span class="stat-val">increible!</span>
     </div>
     <div class="stat-item" id="st5">
       <span class="stat-emoji">🎓</span>
-      <span class="stat-label">Semestre completado</span>
+      <span class="stat-label">¿Semestre completado?</span>
       <div class="stat-track"><div class="stat-bar bar-mint" data-w="100"></div></div>
-      <span class="stat-val" style="color:var(--mint-d)">LOGRADO ✓</span>
+      <span class="stat-val" style="color:var(--mint-d)">LOGRADO!!</span>
     </div>
   </div>
 
-  <button class="btn btn-lilac" onclick="showAchs()">Ver logros desbloqueados ✨</button>
+  <button class="btn btn-lilac" onclick="showAchs()">Ver logros desbloqueados</button>
 </section>
 
 <!-- PANTALLA 4: LOGROS -->
 <section class="screen" id="s-achs">
-  <span class="pill">🏆 Sistema de logros</span>
+  <span class="pill">logros obtenidos</span>
   <h1>Logros<br><span class="pink">Desbloqueados</span></h1>
   <div id="ach-list" style="display:flex;flex-direction:column;gap:10px;width:100%;"></div>
-  <button class="btn btn-pink" id="btn-reward" onclick="showFinal()" style="display:none;">🎁 Ver recompensa</button>
+  <button class="btn btn-pink" id="btn-reward" onclick="showFinal()" style="display:none;">Terminar analisis</button>
 </section>
 
 <!-- PANTALLA 5: CARTA FINAL -->
@@ -385,23 +378,23 @@
   </svg>
 
   <div style="text-align:center;">
-    <h1><span class="lilac">Felicitaciones!</span><br>Lo lograste 🎉</h1>
+    <h1><span class="lilac">Felicitaciones Isaa</span><br>Lo lograste!!🎉</h1>
     <p style="margin-top:8px;font-size:1.2rem;letter-spacing:.2em;color:var(--yellow-d);">★ ★ ★ ★ ★</p>
   </div>
 
   <div class="letter-wrap">
     <div class="letter-text">
       <p>Quería felicitarte por todo el esfuerzo que hiciste este semestre.</p>
-      <p>Muchas veces solo vemos las notas o los resultados, pero detrás de ellos hubo horas de estudio, trabajos, cansancio y mucha constancia.</p>
-      <p>Por eso quise hacer este pequeño detalle — porque ese esfuerzo merece ser reconocido, aunque sea de esta forma.</p>
-      <p>Espero que te sientas orgullosa de lo que lograste, porque terminar un semestre nunca es algo sencillo. Requiere esfuerzo real, sacrificio real y mucha determinación.</p>
-      <p>Ahora toca descansar un poco, disfrutar lo que conseguiste y recargar energías para lo que viene.</p>
-      <p><strong>Felicitaciones por completar una etapa más. 🎓🌸</strong></p>
+      <p>Muchas veces solo nos fijamos en las notas o los resultados, pero detrás de ellos hubo horas de estudio, trabajos, cansancio y mucha constancia.</p>
+      <p>Por eso quise hacer este pequeño recordatorio, porque ese esfuerzo merece ser reconocido, aunque sea con una simple pagina.</p>
+      <p>Espero que te sientas orgullosa de lo que lograste, porque terminar un semestre nunca es algo sencillo. Se necesita esfuerzo real, sacrificio, vocación y mucha determinación.</p>
+      <p>disfruta de todas tus victorias, no olvides que eres increible, mereces todo lo bonito que desees y sé que lo tendrás.</p>
+      <p><strong>Felicitaciones por completar un semestre más</strong></p>
     </div>
-    <div class="letter-sign">— Con admiración por tu esfuerzo ✨</div>
+    <div class="letter-sign">—De Dani, con admiración por tu esfuerzo ✨</div>
   </div>
 
-  <button class="btn btn-ghost" onclick="restart()">↺ Reiniciar simulador</button>
+  <button class="btn btn-ghost" onclick="restart()">Reiniciar simulador</button>
 </section>
 
 <script>
@@ -476,12 +469,12 @@ function showStats() {
 }
 
 const ACHS = [
-  { icon:'⚔️', color:'ach-pink',   badge:'Epico',      badgeC:'badge-pink',   name:'Guerrera de Parciales',     desc:'Supero multiples semanas de examenes sin rendirse' },
-  { icon:'📦', color:'ach-lilac',  badge:'Raro',       badgeC:'badge-lilac',  name:'Maestra de las Entregas',   desc:'Entrego todos los trabajos incluso bajo presion extrema' },
-  { icon:'⏰', color:'ach-sky',    badge:'Epico',      badgeC:'badge-sky',    name:'Cazadora de Fechas Limite', desc:'Sobrevivio a plazos imposibles con determinacion' },
-  { icon:'☕', color:'ach-yellow', badge:'Legendario', badgeC:'badge-yellow', name:'Resistencia Infinita',      desc:'Continuo avanzando cuando cualquiera habria parado' },
-  { icon:'🎓', color:'ach-mint',   badge:'Legendario', badgeC:'badge-mint',   name:'Semestre Completado',       desc:'Finalizo exitosamente el semestre universitario' },
-  { icon:'🌟', color:'ach-peach',  badge:'Especial',   badgeC:'badge-peach',  name:'Mereces Descansar',         desc:'Ganaste el derecho de disfrutar tu logro con orgullo' },
+  { icon:'⚔️', color:'ach-pink',   badge:'Epico',      badgeC:'badge-pink',   name:'la más tesa de los parciales',     desc:'Superaste muchisimas semanas de examenes sin rendirtee' },
+  { icon:'📦', color:'ach-lilac',  badge:'Raro',       badgeC:'badge-lilac',  name:'por tu gran compromiso',   desc:'Entregaste todos los trabajos incluso estando bajo mucha presion' },
+  { icon:'⏰', color:'ach-sky',    badge:'Epico',      badgeC:'badge-sky',    name:'por desafiar al tiempo', desc:'Sobreviviste a plazos imposibles con responsabilidad' },
+  { icon:'☕', color:'ach-yellow', badge:'Legendario', badgeC:'badge-yellow', name:'perseverancia',      desc:'Continuaste avanzando cuando cualquiera en tu lugar habria parado' },
+  { icon:'🎓', color:'ach-mint',   badge:'Legendario', badgeC:'badge-mint',   name:'Otro semestre Completado!!',       desc:'terminaste un semestre más con exitoo' },
+  { icon:'🌟', color:'ach-peach',  badge:'Especial',   badgeC:'badge-peach',  name:'por tu esfuerzo',         desc:'disfruta tu logro con orgullo, has dado un paso más! :3' },
 ];
 
 function showAchs() {
